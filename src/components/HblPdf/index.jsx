@@ -526,11 +526,11 @@ export const HblPdf = (props) => {
 
   let data = {...props}
 
-  console.log(data,"blData")
+  console.log(data.date,"blData")
 
-  data.blDate = moment(data.blDate,"YYYY-MM-DD")
+  console.log(props,"sdfsdf")
 
-  console.log(moment(data.blDate,"YYYY-MM-DD").format("MMM"),"sdfa")
+  console.log(moment(data.date,"DD-MM-YYYY").format("MMM"),"sdfa")
 
   let fieldArr = [...props.cargoItems]
 
@@ -872,13 +872,13 @@ export const HblPdf = (props) => {
               </View>
               <View style={styles.dateDiv}>
                 <Text style={styles.oneDate}>
-                  {moment(data.blDate, "YYYY-MM-DD").format("MMM") ?? ""}
+                  {moment(data.date, "YYYY-MM-DD").format("MMM") ?? ""}
                 </Text>
                 <Text style={styles.twoDate}>
-                  {moment(data.blDate, "YYYY-MM-DD").format("DD") ?? ""}
+                  {moment(data.date, "YYYY-MM-DD").format("DD") ?? ""}
                 </Text>
                 <Text style={styles.threeDate}>
-                  {moment(data.blDate, "YYYY-MM-DD").format("YYYY") ?? ""}
+                  {moment(data.date, "YYYY-MM-DD").format("YYYY") ?? ""}
                 </Text>
               </View>
             </View>

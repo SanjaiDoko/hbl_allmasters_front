@@ -8,9 +8,13 @@ import { Provider } from "react-redux";
 import { store, persistor } from "./redux/stores/store";
 import { PersistGate } from "redux-persist/integration/react";
 
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+
 function App() {
   return (
     <Provider store={store}>
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
       <PersistGate loading={null} persistor={persistor}>
         <div className="header" style={{background: "blue", height: "50px"}}>HBL DOCUMENT</div>
         <Routes>
@@ -19,6 +23,7 @@ function App() {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </PersistGate>
+      </LocalizationProvider>
     </Provider>
   );
 }

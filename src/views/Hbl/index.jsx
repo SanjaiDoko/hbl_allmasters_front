@@ -15,6 +15,7 @@ import { validationSchema } from "../../validationSchema/hblValidation";
 import { useDispatch, useSelector } from "react-redux";
 import { resetHblData, setHblData } from "../../redux/slices/hblSlice";
 import { useNavigate } from "react-router";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
 const openFileNewWindow = async (data) => {
   let blob = await pdf(HblPdf(data)).toBlob();
@@ -190,15 +191,24 @@ const Hbl = () => {
     mode: "onSubmit",
   });
 
+  console.log(watch("blDate"),"blDate")
+
   useEffect(() => {
-    if (data) {
-      console.log(data,"data")
-    
-      let formData = {...data}
-      formData.correction = defaultCorrection
+
+    if (data.documentNo) {
+      console.log(data,"dat5a")
+      let formData = { ...data };
+      formData.correction = defaultCorrection;
+      console.log(moment(formData.blDate),"useef") //2023-10-05 useef
+      // formData.blDate = moment(formData.blDate)
+      formData.blDate = moment(formData.blDate,"YYYY-MM-DD")
+      console.log(formData,"foem data")
+      console.log(moment(formData.date),"form bl data")
       reset(formData);
     }
   }, [data]);
+
+  console.log(watch('blDate'),"blDate")
 
   const { fields, append, remove } = useFieldArray({
     control,
@@ -248,13 +258,17 @@ const Hbl = () => {
 
   const resetHandler = () => {
     alert("Are you sure you want to reset the values");
-    dispatch(resetHblData())
+    dispatch(resetHblData());
     reset();
-  }
+  };
+
+  console.log(errors,"errors")
 
   const formSubmitHandler = async (data) => {
-    data.blDate = moment(data.blDate,"YYYY-MM-DD").format("DD-MM-YYYY")
-    console.log(data.blDate,"bl date")
+    data.date = moment(data.blDate, "YYYY-DD-MM");
+    console.log(data.blDate,"bldate")
+    data.blDate = moment(data.blDate, "YYYY-DD-MM");
+    console.log(data.date,"date")
     dispatch(setHblData(data));
     navigate("/preview");
   };
@@ -263,7 +277,7 @@ const Hbl = () => {
     append(initialCargoItems);
   };
 
-  const CargoItem = ({ index }) => {
+  const CargoItem = React.memo(({ index }) => {
     return (
       <div className="cargoItemContainer">
         {
@@ -282,19 +296,6 @@ const Hbl = () => {
               className="ctext"
               parentClassName="ctextdiv"
             />
-            {/* <textarea
-              {...register(`cargoItems.${index}.marksAndNumbers`)}
-              className="field_r"
-              rows={7}
-              cols={18}
-            />
-            <Form.Text className="error">
-              {errors?.cargoItems
-                ? errors.cargoItems[index]?.marksAndNumbers
-                  ? errors.cargoItems[index]?.marksAndNumbers.message
-                  : ""
-                : ""}
-            </Form.Text> */}
           </div>
         }
         <div className="packagesdiv">
@@ -962,19 +963,9 @@ const Hbl = () => {
         </div>
       </div>
     );
-  };
+  });
 
   const previewHbl = () => {
-    // validationSchema.isValid(getValues(),  {context: { shipmentType: shipmentType, marksType }}) .then((valid) => {
-    //   if (valid) {
-
-    // })
-    // } else {
-
-    // }
-    // .catch((error) => {
-    //   console.error('Error:', error);
-    // });
     let payload = {};
     let data = getValues();
     data.prepaidtotal = data.correction.reduce((accumulator, item) => {
@@ -1026,7 +1017,7 @@ const Hbl = () => {
                 formProps={{
                   control,
                   name: "shipper",
-                  label: "shipper :",
+                  label: "SHIPPER",
                 }}
                 maxLength="472"
                 rows="7"
@@ -1041,12 +1032,13 @@ const Hbl = () => {
                     formProps={{
                       control,
                       name: "documentNo",
-                      label: "Document Number :",
+                      label: "DOCUMENT NUMBER",
                     }}
+                    mandatory={true}
                   />
                 </div>
                 <div>
-                  <Form.Label>House BL Number:</Form.Label>
+                  <Form.Label>HOUSE BL NUMBER</Form.Label>
                   <p className="red">N/A</p>
                 </div>
               </div>
@@ -1086,8 +1078,9 @@ const Hbl = () => {
                     formProps={{
                       control,
                       name: "destinationAgent",
-                      label: "DESTINATION AGENT :",
+                      label: "DESTINATION AGENT",
                     }}
+                    mandatory={true}
                     maxLength="380"
                     rows="3"
                     cols={57}
@@ -8130,11 +8123,8 @@ const Hbl = () => {
           </div>
           <div className="second-container-third-item">
             <div className="firstdiv">
-              {/* <label htmlFor="portOfDischarge-" className="portOfDischarge">
-                PORT OF DISCHARGE <span className="red">*</span>
-              </label> */}
               <Form.Label htmlFor="portOfDischarge">
-                PORT OF DISCHARGE
+                PORT OF DISCHARGE <span className="red">*</span>
               </Form.Label>
               <Form.Select
                 aria-label="Default select example"
@@ -13786,6 +13776,7 @@ const Hbl = () => {
                   name: "placeOfDelivery",
                   label: "PLACE OF DELIVERY",
                 }}
+                mandatory={true}
               />
             </div>
             <div className="thirddiv">
@@ -13896,7 +13887,790 @@ const Hbl = () => {
             </div>
             <div>
               {fields.map((item, index) => {
-                return <CargoItem key={item.id} item={item} index={index} />;
+                return (
+                  <div className="cargoItemContainer">
+                    {
+                      <div
+                        className={`marksdiv ${
+                          index != 0 && watch("marksType") === "single"
+                            ? "hidden"
+                            : ""
+                        }`}
+                      >
+                        <TextArea
+                          formProps={{
+                            control,
+                            name: `cargoItems.${index}.marksAndNumbers`,
+                          }}
+                          row="3"
+                          cols="59"
+                          className="ctext"
+                          parentClassName="ctextdiv"
+                        />
+                      </div>
+                    }
+                    <div className="packagesdiv">
+                      <div className="col-flex">
+                        <input
+                          {...register(`cargoItems.${index}.containerText`)}
+                          disabled={watch("shipmentType") === "lcl"}
+                          type="text"
+                          className="field_r"
+                        />
+                        <Form.Text className="error">
+                          {errors?.cargoItems
+                            ? errors.cargoItems[index]?.containerText
+                              ? errors.cargoItems[index]?.containerText.message
+                              : ""
+                            : ""}
+                        </Form.Text>
+                        <Controller
+                          name={`cargoItems.${index}.containerType`}
+                          control={control}
+                          defaultValue=""
+                          render={({ field }) => (
+                            <>
+                              <select
+                                {...field}
+                                disabled={watch("shipmentType") === "lcl"}
+                                name="containerType"
+                                id="containerType"
+                                className="fields_r seconddivselect rselect"
+                              >
+                                <option value=""></option>
+                                <option value="10G1">
+                                  10 Foot Dry (10' x 8' x 8') - 10G1
+                                </option>
+                                <option value="2000">20' DV</option>
+                                <option value="20B0">
+                                  20 Foot Bulk (20' x 8' x 8') - 20B0
+                                </option>
+                                <option value="20B1">
+                                  20 Foot Bulk (20' x 8' x 8') - 20B1
+                                </option>
+                                <option value="20B3">
+                                  20 Foot Bulk (20' x 8' x 8') - 20B3
+                                </option>
+                                <option value="20B4">
+                                  20 Foot Bulk (20' x 8' x 8') - 20B4
+                                </option>
+                                <option value="20B5">
+                                  20 Foot Bulk (20' x 8' x 8') - 20B5
+                                </option>
+                                <option value="20B6">
+                                  20 Foot Bulk (20' x 8' x 8') - 20B6
+                                </option>
+                                <option value="20FR">
+                                  20 Foot Flat Rack - 20FR
+                                </option>
+                                <option value="20G0">
+                                  20 Foot Dry (20' x 8' x 8') - 20G0
+                                </option>
+                                <option value="20G1">
+                                  20 Foot Dry (20' x 8' x 8') - 20G1
+                                </option>
+                                <option value="20G2">
+                                  20 Foot Dry (20' x 8' x 8') - 20G2
+                                </option>
+                                <option value="20G3">
+                                  20 Foot Dry (20' x 8' x 8') - 20G3
+                                </option>
+                                <option value="20H0">
+                                  20 Foot Insulated (20' x 8' x 8') - 20H0
+                                </option>
+                                <option value="20H1">
+                                  20 Foot Insulated (20' x 8' x 8') - 20H1
+                                </option>
+                                <option value="20H2">
+                                  20 Foot Insulated (20' x 8' x 8') - 20H2
+                                </option>
+                                <option value="20H5">
+                                  20 Foot Insulated (20' x 8' x 8') - 20H5
+                                </option>
+                                <option value="20H6">
+                                  20 Foot Insulated (20' x 8' x 8') - 20H6
+                                </option>
+                                <option value="20P1">
+                                  20 Foot Flat (20' x 8' x 8') - 20P1 (O)
+                                </option>
+                                <option value="20P2">
+                                  20 Foot Flat (20' x 8' x 8') - 20P2 (O)
+                                </option>
+                                <option value="20P3">
+                                  20 Foot Flat Collapsible (20' x 8' x 8') -
+                                  20P3 (O)
+                                </option>
+                                <option value="20P4">
+                                  20 Foot Flat Collapsible (20' x 8' x 8') -
+                                  20P4 (O)
+                                </option>
+                                <option value="20P5">
+                                  20 Foot Platform Superstructure (20' x 8' x
+                                  8') - (O)
+                                </option>
+                                <option value="20R0">
+                                  20 Foot Reefer (20' x 8' x 8') - 20R0 (R)
+                                </option>
+                                <option value="20R1">
+                                  20 Foot Reefer (20' x 8' x 8') - 20R1 (R)
+                                </option>
+                                <option value="20R2">
+                                  20 Foot Reefer (20' x 8' x 8') - 20R2 (R)
+                                </option>
+                                <option value="20R3">
+                                  20 Foot Reefer (20' x 8' x 8') - 20R3 (R)
+                                </option>
+                                <option value="20R8">
+                                  20 Foot Reefer (20' x 8' x 8') - 20R8 (R)
+                                </option>
+                                <option value="20R9">
+                                  20 Foot Reefer (20' x 8' x 8') - 20R9 (R)
+                                </option>
+                                <option value="20T0">
+                                  20 Foot Tank (20' x 8' x 8') - 20T0
+                                </option>
+                                <option value="20T1">
+                                  20 Foot Tank (20' x 8' x 8') - 20T1
+                                </option>
+                                <option value="20T2">
+                                  20 Foot Tank (20' x 8' x 8') - 20T2
+                                </option>
+                                <option value="20T3">
+                                  20 Foot Tank for Dangerous Liquid (20' x 8' x
+                                  8'){" "}
+                                </option>
+                                <option value="20T4">
+                                  20 Foot Tank for Dangerous Liquid (20' x 8' x
+                                  8'){" "}
+                                </option>
+                                <option value="20T5">
+                                  20 Foot Tank for Dangerous Liquid (20' x 8' x
+                                  8'){" "}
+                                </option>
+                                <option value="20T6">
+                                  20 Foot Tank for Dangerous Liquid (20' x 8' x
+                                  8'){" "}
+                                </option>
+                                <option value="20T7">
+                                  20 Foot Tank for Gas (20' x 8' x 8') - 20T7
+                                </option>
+                                <option value="20T8">
+                                  20 Foot Tank for Gas (20' x 8' x 8') - 20T8
+                                </option>
+                                <option value="20T9">
+                                  20 Foot Tank for Gas (20' x 8' x 8') - 20T9
+                                </option>
+                                <option value="20U0">
+                                  20 Foot Open Top (20' x 8' x 8') - 20U0 (O)
+                                </option>
+                                <option value="20U1">
+                                  20 Foot Open Top (20' x 8' x 8') - 20U1 (O)
+                                </option>
+                                <option value="20U2">
+                                  20 Foot Open Top (20' x 8' x 8') - 20U2 (O)
+                                </option>
+                                <option value="20U3">
+                                  20 Foot Open Top (20' x 8' x 8') - 20U3 (O)
+                                </option>
+                                <option value="20U4">
+                                  20 Foot Open Top (20' x 8' x 8') - 20U4 (O)
+                                </option>
+                                <option value="20U5">
+                                  20 Foot Open Top (20' x 8' x 8') - 20U5 (O)
+                                </option>
+                                <option value="20V0">
+                                  20 Foot Ventilated (20' x 8' x 8') - 20V0
+                                </option>
+                                <option value="20V2">
+                                  20 Foot Ventilated (20' x 8' x 8') - 20V2
+                                </option>
+                                <option value="20V4">
+                                  20 Foot Ventilated (20' x 8' x 8') - 20V4
+                                </option>
+                                <option value="22B0">20' Bulk</option>
+                                <option value="22B1">
+                                  20 Foot Bulk (20' x 8'6'' x 8') - 22B1
+                                </option>
+                                <option value="22B3">
+                                  20 Foot Bulk (20' x 8'6'' x 8') - 22B3
+                                </option>
+                                <option value="22B4">
+                                  20 Foot Bulk (20' x 8'6'' x 8') - 22B4
+                                </option>
+                                <option value="22B5">
+                                  20 Foot Bulk (20' x 8'6'' x 8') - 22B5
+                                </option>
+                                <option value="22B6">
+                                  20 Foot Bulk (20' x 8'6'' x 8') - 22B6
+                                </option>
+                                <option value="22G0">20' Standard Dry</option>
+                                <option value="22G1">20' SD</option>
+                                <option value="22G2">20' Dry - 22G2</option>
+                                <option value="22G3">20' Dry - 22G3</option>
+                                <option value="22G4">20' GP</option>
+                                <option value="22G8">
+                                  20' General Purpose Dry
+                                </option>
+                                <option value="22G9">
+                                  20' General Purpose
+                                </option>
+                                <option value="22H0">
+                                  20' Reefer/Insulated (R)
+                                </option>
+                                <option value="22H2">
+                                  20' RF/Insulated (R)
+                                </option>
+                                <option value="22P1">20' Flat (O)</option>
+                                <option value="22P2">
+                                  20 Foot Flat (20' x 8'6'' x 8') - 22P2 (O)
+                                </option>
+                                <option value="22P3">
+                                  20' Flat Collapsible (O)
+                                </option>
+                                <option value="22P5">
+                                  20' Platform Superstructure (O)
+                                </option>
+                                <option value="22P7">20' Platform (O)</option>
+                                <option value="22P8">
+                                  20 Foot Platform (20' x 8'6'' x 8') - 22P8 (O)
+                                </option>
+                                <option value="22P9">
+                                  20 Foot Platform (20' x 8'6'' x 8') - 22P9 (O)
+                                </option>
+                                <option value="22R0">
+                                  20' Reefer/ Mechanical (R)
+                                </option>
+                                <option value="22R1">
+                                  20' Reefer/ Mechanical (R)
+                                </option>
+                                <option value="22R7">20' Reefer (R)</option>
+                                <option value="22R9">20' RF (R)</option>
+                                <option value="22S1">20' Automobile</option>
+                                <option value="22T0">20' Tank</option>
+                                <option value="22T1">
+                                  20 Foot Tank (20' x 8'6'' x 8') - 22T1
+                                </option>
+                                <option value="22T2">
+                                  20 Foot Tank (20' x 8'6'' x 8') - 22T2
+                                </option>
+                                <option value="22T3">
+                                  20 Foot Tank for Dangerous Liquid (20' x 8'6''
+                                  x 8
+                                </option>
+                                <option value="22T4">
+                                  20 Foot Tank for Dangerous Liquid (20' x 8'6''
+                                  x 8
+                                </option>
+                                <option value="22T5">
+                                  20 Foot Tank for Dangerous Liquid (20' x 8'6''
+                                  x 8
+                                </option>
+                                <option value="22T6">
+                                  20 Foot Tank for Dangerous Liquid (20' x 8'6''
+                                  x 8
+                                </option>
+                                <option value="22T7">
+                                  20 Foot Tank for Gas (20' x 8'6'' x 8') - 22T7
+                                </option>
+                                <option value="22T8">
+                                  20 Foot Tank for Gas (20' x 8'6'' x 8') - 22T8
+                                </option>
+                                <option value="22U0">20' Open Top (O)</option>
+                                <option value="22U1">20' OT (O)</option>
+                                <option value="22U6">20' Hard Top</option>
+                                <option value="22UP">20 Hard Top - 22UP</option>
+                                <option value="22V0">
+                                  20' GP / Ventilated
+                                </option>
+                                <option value="22V2">
+                                  20' DV / Mechanical
+                                </option>
+                                <option value="22V3">20' Dry Ventilated</option>
+                                <option value="22VH">20 Ventilated</option>
+                                <option value="25G0">20' High Cube Dry</option>
+                                <option value="25R1">
+                                  20' High Cube Reefer
+                                </option>
+                                <option value="26G0">20' HC Dry</option>
+                                <option value="26H0">
+                                  20' High Cube Reefer/Insulated
+                                </option>
+                                <option value="26T0">20' High Cube Tank</option>
+                                <option value="28P0">
+                                  20 Foot Platform (20' x 4'3'' x 8') - 28P0 (O)
+                                </option>
+                                <option value="28T8">
+                                  20 Foot Tank for Gas (20' x 4'3'' x 8') - 28T8
+                                </option>
+                                <option value="28U1">
+                                  20 Foot Open Top (20' x 4'3'' x 8') - 28U1 (O)
+                                </option>
+                                <option value="28V0">
+                                  20 Foot Ventilated (20' x 4'3'' x 8') - 28V0
+                                </option>
+                                <option value="29P0">
+                                  20 Foot Platform (20' x 4' x 8') - 29P0 (O)
+                                </option>
+                                <option value="2EG0">
+                                  20 Foot High Cube Dry (20' x 9'6'' x 8'/8'2'')
+                                  - 2
+                                </option>
+                                <option value="4000">40' DV</option>
+                                <option value="42B0">40' Bulk</option>
+                                <option value="42FR">
+                                  40 Foot Flat Rack - 42FR
+                                </option>
+                                <option value="42G0">40' GP</option>
+                                <option value="42G1">40' Standard Dry</option>
+                                <option value="42H0">
+                                  40' Reefer/Insulated (R)
+                                </option>
+                                <option value="42P1">40' Flat (O)</option>
+                                <option value="42P2">
+                                  40 Foot Flat (40' x 8'6'' x 8') - 42P2 (O)
+                                </option>
+                                <option value="42P3">
+                                  40' Flat Collapsible (O)
+                                </option>
+                                <option value="42P5">
+                                  40' Platform Superstructure (O)
+                                </option>
+                                <option value="42P6">40' Platform (O)</option>
+                                <option value="42P8">
+                                  40 Foot Platform (40' x 8'6'' x 8') - 42P8 (O)
+                                </option>
+                                <option value="42P9">
+                                  40 Foot Platform (40' x 8'6'' x 8') - 42P9 (O)
+                                </option>
+                                <option value="42R0">
+                                  40' Reefer/ Mechanical (R)
+                                </option>
+                                <option value="42R1">
+                                  40' Reefer/ Mechanical (R)
+                                </option>
+                                <option value="42R3">40' RF (R)</option>
+                                <option value="42R9">40' Reefer (R)</option>
+                                <option value="42S1">40' Automobile</option>
+                                <option value="42T0">40' Tank</option>
+                                <option value="42T2">
+                                  40 Foot Tank (40' x 8'6'' x 8') - 42T2
+                                </option>
+                                <option value="42T5">
+                                  40 Foot Tank for Dangerous Liquid (40' x 8'6''
+                                  x 8
+                                </option>
+                                <option value="42T6">
+                                  40 Foot Tank for Dangerous Liquid (40' x 8'6''
+                                  x 8
+                                </option>
+                                <option value="42T8">
+                                  40 Foot Tank for Gas (40' x 8'6'' x 8') - 42T8
+                                </option>
+                                <option value="42U1">40' Open Top (O)</option>
+                                <option value="42U6">40' Hard Top</option>
+                                <option value="42UP">40 Hard Top</option>
+                                <option value="42V0">40' Dry Ventilated</option>
+                                <option value="42VH">40 Ventilated</option>
+                                <option value="45B3">40' High Cube Bulk</option>
+                                <option value="45G0">40' High Cube Dry</option>
+                                <option value="45G1">40' HC Dry</option>
+                                <option value="45P3">
+                                  40' High Cube Flat (O)
+                                </option>
+                                <option value="45P8">
+                                  40' High Cube Platform (O)
+                                </option>
+                                <option value="45R1">40' HC Reefer (R)</option>
+                                <option value="45R9">
+                                  40' High Cube Reefer (R)
+                                </option>
+                                <option value="45U1">
+                                  40' High Cube Open Top (O)
+                                </option>
+                                <option value="45U6">
+                                  40' High Cube Hardtop
+                                </option>
+                                <option value="46H0">
+                                  40' High Cube Reefer/Insulated (R)
+                                </option>
+                                <option value="46P3">
+                                  40' High Cube Flat Collapsible (O)
+                                </option>
+                                <option value="48P0">
+                                  40 Foot Platform (40' x 4'3'' x 8') - 48P0 (O)
+                                </option>
+                                <option value="48T8">
+                                  40 Foot Tank for Gas (40' x 4'3'' x 8') - 48T8
+                                </option>
+                                <option value="48U1">
+                                  40 Foot Open Top (40' x 4'3'' x 8') - 48U1 (O)
+                                </option>
+                                <option value="49P0">
+                                  40 Foot Platform (40' x 4' x 8') - 49P0 (O)
+                                </option>
+                                <option value="4CG0">
+                                  40 Foot Dry (40' x 8'6'' x 8'/8'2'') - 4CG0
+                                </option>
+                                <option value="CONT">CONTAINERS</option>
+                                <option value="L0G1">
+                                  45 Foot Dry (45' x 8' x 8') - L0G1
+                                </option>
+                                <option value="L2G1">45' Dry</option>
+                                <option value="L2P1">45' Platform</option>
+                                <option value="L2R1">
+                                  45' Reefer/Mechanical (R)
+                                </option>
+                                <option value="L2T0">45' Tank</option>
+                                <option value="L2U1">45' Open Top (O)</option>
+                                <option value="L5G0">45' High Cube Dry</option>
+                                <option value="L5G1">45' High Cube Dry </option>
+                                <option value="L5R0">
+                                  45' High Cube Reefer (R)
+                                </option>
+                                <option value="L5R1">
+                                  45' HC Reefer / Mechanical (R)
+                                </option>
+                                <option value="L5R2">45' HCRF (R)</option>
+                                <option value="L5R3">45' HC Reefer (R)</option>
+                                <option value="L5R4">
+                                  45' High Cube Reefer (R)
+                                </option>
+                                <option value="L5R8">
+                                  45 Foot High Cube Reefer (45' x 9'6'' x 8') -
+                                  L5R8 (R)
+                                </option>
+                                <option value="L5R9">
+                                  45 Foot High Cube Reefer (45' x 9'6'' x 8') -
+                                  L5R9 (R)
+                                </option>
+                                <option value="LDG1">
+                                  45 Foot High Cube Dry (45' x 9' x 8'/8'2'') -
+                                  LDG1
+                                </option>
+                                <option value="LDG8">
+                                  45 Foot High Cube General Purpose / Dry (45' x
+                                  9'{" "}
+                                </option>
+                                <option value="LEG1">
+                                  45 Foot High Cube Dry (45' x 9'6'' x 8'/8'2'')
+                                  - L
+                                </option>
+                                <option value="LEG8">
+                                  45 Foot High Cube General Purpose / Dry (45' x
+                                  9'6
+                                </option>
+                                <option value="LEG9">
+                                  45 Foot High Cube General Purpose / Dry (45' x
+                                  9'6
+                                </option>
+                                <option value="LLG1">
+                                  45 Foot Dry (45' x 8'6'' x &gt;8'2'') - LLG1
+                                </option>
+                                <option value="LNG1">
+                                  45 Foot High Cube Dry (45' x 9'6'' x
+                                  &gt;8'2'') - LNG
+                                </option>
+                                <option value="LNR1">
+                                  45 Foot High Cube Reefer (45' x 9'6'' x
+                                  &gt;8'2'') - (R)
+                                </option>
+                                <option value="M5G0">
+                                  48 Foot High Cube - M5G0
+                                </option>
+                                <option value="P5G0">
+                                  53 Foot High Cube - P5G0
+                                </option>
+                              </select>
+                              <Form.Text className="error">
+                                {errors?.cargoItems
+                                  ? errors.cargoItems[index]?.containerType
+                                    ? errors.cargoItems[index]?.containerType
+                                        .message
+                                    : ""
+                                  : ""}
+                              </Form.Text>
+                            </>
+                          )}
+                        />
+                      </div>
+                      <div className="col-flex">
+                        <input
+                          {...register(`cargoItems.${index}.cargoText`)}
+                          type="text"
+                          className="field_b"
+                        />
+                        <Form.Text className="error">
+                          {errors?.cargoItems
+                            ? errors.cargoItems[index]?.cargoText
+                              ? errors.cargoItems[index]?.cargoText.message
+                              : ""
+                            : ""}
+                        </Form.Text>
+                        <Controller
+                          name={`cargoItems.${index}.cargoType`}
+                          control={control}
+                          defaultValue=""
+                          render={({ field }) => (
+                            <select
+                              {...field}
+                              name="cargoType"
+                              id="cargoType"
+                              className="fields_b seconddivselect bselect"
+                            >
+                              <option value=""></option>
+                              <option value="AMM">AMMO PACK</option>
+                              <option value="ATH">ATTACHMENT</option>
+                              <option value="BAG">BAG</option>
+                              <option value="BLE">BALE</option>
+                              <option value="BDG">BANDING</option>
+                              <option value="BRG">BARGE</option>
+                              <option value="BBL">BARREL</option>
+                              <option value="BSK">BASKET OR HAMPER</option>
+                              <option value="BEM">BEAM</option>
+                              <option value="BLT">BELTING</option>
+                              <option value="BIB">BIG BAG</option>
+                              <option value="BIN">BIN</option>
+                              <option value="BIC">BING CHEST</option>
+                              <option value="BLO">BLOCK</option>
+                              <option value="BOB">BOBBIN</option>
+                              <option value="BOT">BOTTLE</option>
+                              <option value="BOX">BOX</option>
+                              <option value="BXI">
+                                BOX, WITH INNER CONTAINER
+                              </option>
+                              <option value="BRC">BRACING</option>
+                              <option value="BXT">BUCKET</option>
+                              <option value="BLK">BULK</option>
+                              <option value="BKG">BULK BAG</option>
+                              <option value="BDL">BUNDLE</option>
+                              <option value="CAB">CABINET</option>
+                              <option value="CAG">CAGE</option>
+                              <option value="CAN">CAN</option>
+                              <option value="CCS">CAN CASE</option>
+                              <option value="CNC">CAN, CYLINDRICAL</option>
+                              <option value="CNR">CAN, RECTANGULAR</option>
+                              <option value="CLD">CAR LOAD, RAIL</option>
+                              <option value="CBY">CARBOY</option>
+                              <option value="CBN">CARBOY, NON-PROTECTED</option>
+                              <option value="CBP">CARBOY, PROTECTED</option>
+                              <option value="CAR">CARRIER</option>
+                              <option value="CTN">CARTON</option>
+                              <option value="CAS">CASE</option>
+                              <option value="CSK">CASK</option>
+                              <option value="CHE">CHEESES</option>
+                              <option value="CHS">CHEST</option>
+                              <option value="COL">COIL</option>
+                              <option value="CLI">COLLI</option>
+                              <option value="CON">CONE</option>
+                              <option value="COR">CORE</option>
+                              <option value="CRF">CORNER REINFORCEMENT</option>
+                              <option value="CRD">CRADLE</option>
+                              <option value="CRT">CRATE</option>
+                              <option value="CUB">CUBE</option>
+                              <option value="CYN">CYLINDER</option>
+                              <option value="CYL">CYLINDER</option>
+                              <option value="DRK">DOUBLE-LENGTH RACK</option>
+                              <option value="DTB">
+                                DOUBLE-LENGTH TOTE BIN
+                              </option>
+                              <option value="DRM">DRUM</option>
+                              <option value="DBK">DRY BULK</option>
+                              <option value="EPR">EDGE PROTECTION</option>
+                              <option value="EGG">EGG CRATING</option>
+                              <option value="ENV">ENVELOPE</option>
+                              <option value="FIR">FIRKIN</option>
+                              <option value="FSK">FLASK</option>
+                              <option value="FXB">FLEXIBAG</option>
+                              <option value="FLO">FLO-BIN</option>
+                              <option value="FWR">FORWARD REEL</option>
+                              <option value="FRM">FRAME</option>
+                              <option value="GAL">GALLON</option>
+                              <option value="HRK">HALF-STANDARD RACK</option>
+                              <option value="HTB">
+                                HALF-STANDARD TOTE BIN
+                              </option>
+                              <option value="HED">HEADS OF BEEF</option>
+                              <option value="HGH">HOGSHEAD</option>
+                              <option value="HPT">HOPPER TRUCK</option>
+                              <option value="ITM">ITEM</option>
+                              <option value="JAR">JAR</option>
+                              <option value="JUG">JUG</option>
+                              <option value="JBG">JUMBO BAG</option>
+                              <option value="KEG">KEG</option>
+                              <option value="KIT">KIT</option>
+                              <option value="KRK">KNOCKDOWN RACK</option>
+                              <option value="KTB">KNOCKDOWN TOTE BIN</option>
+                              <option value="LIF">LIFT</option>
+                              <option value="LVN">LIFT VAN</option>
+                              <option value="LNR">LINER</option>
+                              <option value="LID">LIP/TOP</option>
+                              <option value="LBK">LIQUID BULK</option>
+                              <option value="LOG">LOG</option>
+                              <option value="LSE">LOOSE</option>
+                              <option value="LUG">LUG</option>
+                              <option value="MET">METAL PACKAGES</option>
+                              <option value="MIX">MIXED CONTAINER TYPES</option>
+                              <option value="MXD">MIXED TYPE PACK</option>
+                              <option value="MRP">MULTI-ROLL PACK</option>
+                              <option value="NOL">NOIL</option>
+                              <option value="HRB">
+                                ON HANGER OR RACK IN BOX
+                              </option>
+                              <option value="WHE">ON OWN WHEEL</option>
+                              <option value="OVW">OVERWRAP</option>
+                              <option value="PCK">
+                                PACK-NOT OTHERWISE SPECIFIED
+                              </option>
+                              <option value="PKG">PACKAGE</option>
+                              <option value="PAL">PAIL</option>
+                              <option value="PLT">PALLET</option>
+                              <option value="PCL">PARCEL</option>
+                              <option value="PRT">PARTITIONING</option>
+                              <option value="PCS">PIECE</option>
+                              <option value="PIR">PIMS</option>
+                              <option value="PRK">PIPE RACK</option>
+                              <option value="PLN">PIPELINE</option>
+                              <option value="PLF">PLATFORM</option>
+                              <option value="PLC">
+                                PRIMARY LIFT CONTAINER
+                              </option>
+                              <option value="POV">PRIVATE VEHICLE</option>
+                              <option value="QTR">QUARTER OF BEEF</option>
+                              <option value="RCK">RACK</option>
+                              <option value="RAL">RAIL (SEMICONDUCTOR)</option>
+                              <option value="REL">REEL</option>
+                              <option value="RFT">REINFORCEMENT</option>
+                              <option value="RVR">REVERSE REEL</option>
+                              <option value="ROL">ROLL</option>
+                              <option value="SAK">SACK</option>
+                              <option value="SVN">SEAVAN - SEA VAN</option>
+                              <option value="SPR">SEPERATOR\DIVIDER</option>
+                              <option value="SET">SET</option>
+                              <option value="SHT">SHEET</option>
+                              <option value="SHK">SHOOK</option>
+                              <option value="SHW">SHRINK WRAPPED</option>
+                              <option value="SID">SIDE OF BEEF</option>
+                              <option value="SKD">SKID</option>
+                              <option value="SKE">
+                                SKID, ELEVATING OF LIFT TRUCK
+                              </option>
+                              <option value="SLV">SLEEVE</option>
+                              <option value="SLP">SLIP SHEET</option>
+                              <option value="SB">SMALL BAG</option>
+                              <option value="DSK">SOUBLE-LENGTH SKID</option>
+                              <option value="SPI">SPIN CYLINDER</option>
+                              <option value="SPL">SPOOL</option>
+                              <option value="TNK">TANK</option>
+                              <option value="TKR">TANK CAR</option>
+                              <option value="TKT">TANK TRUCK</option>
+                              <option value="TRC">TIERCE</option>
+                              <option value="TIN">TIN</option>
+                              <option value="TBN">TOTE BIN</option>
+                              <option value="TTC">TOTE CAN</option>
+                              <option value="TLD">
+                                TRAILER\CONTAINER LOAD (RAIL)
+                              </option>
+                              <option value="TRY">TRAY</option>
+                              <option value="TRK">TRUNK OR CHEST</option>
+                              <option value="TSS">TRUNK,SALESMAN SAMPLE</option>
+                              <option value="TUB">TUB</option>
+                              <option value="TBE">TUBE</option>
+                              <option value="UNT">UNIT</option>
+                              <option value="UNP">UNPACKED</option>
+                              <option value="VPK">VAN PACK</option>
+                              <option value="VEH">VEHICLES</option>
+                              <option value="WLC">WHEELED CARRIER</option>
+                              <option value="DM2">WOODEN BOX</option>
+                              <option value="WDC">WOODEN CASE</option>
+                              <option value="DM1">WOODEN CRATE</option>
+                              <option value="WRP">WRAPPED</option>
+                            </select>
+                          )}
+                        />
+                        <Form.Text className="error">
+                          {errors?.cargoItems
+                            ? errors.cargoItems[index]?.cargoType
+                              ? errors.cargoItems[index]?.cargoType.message
+                              : ""
+                            : ""}
+                        </Form.Text>
+                      </div>
+                    </div>
+                    <div className="descriptiondiv">
+                      <TextArea
+                        formProps={{
+                          control,
+                          name: `cargoItems.${index}.description`,
+                        }}
+                        row="3"
+                        cols="59"
+                        className="ctext"
+                        parentClassName="ctextdiv"
+                      />
+                      {/* <textarea
+                          {...register(`cargoItems.${index}.description`)}
+                          rows={7}
+                          cols="59"
+                          className="field_b"
+                        />
+                        <Form.Text className="error">
+                          {errors?.cargoItems
+                            ? errors.cargoItems[index]?.description?.message
+                            : ""}
+                        </Form.Text> */}
+                    </div>
+                    <div className="fourthdiv">
+                      <FormInput
+                        formProps={{
+                          control,
+                          name: `cargoItems.${index}.grossWeight`,
+                        }}
+                        className="cinput"
+                      />
+                      {/* <input
+                          {...register(`cargoItems.${index}.grossWeight`)}
+                          type="text"
+                          className="field_r"
+                         
+                        /> */}
+                      {/* <Form.Text className="error">
+                          {errors?.cargoItems
+                            ? errors.cargoItems[index]?.grossWeight?.message
+                            : ""}
+                        </Form.Text> */}
+                    </div>
+                    <div className="fifthdiv">
+                      <FormInput
+                        formProps={{
+                          control,
+                          name: `cargoItems.${index}.measurement`,
+                        }}
+                        // className="declaredinput"
+                      />
+                      {/* <input
+                          {...register(`cargoItems.${index}.measurement`)}
+                          type="text"
+                          className="field_b"
+                          onWheel={() => document.activeElement.blur()}
+                          // name="measurement"
+                        />
+                        <Form.Text className="error">
+                          {errors?.cargoItems
+                            ? errors.cargoItems[index]?.measurement?.message
+                            : ""}
+                        </Form.Text> */}
+                    </div>
+                    <div>
+                      {index != 0 && (
+                        <DeleteIcon
+                          style={{ color: "red" }}
+                          onClick={() => remove(index)}
+                        />
+                      )}
+                    </div>
+                  </div>
+                );
+                // return <CargoItem key={item.id} item={item} index={index} />;
               })}
             </div>
           </div>
@@ -14032,12 +14806,14 @@ const Hbl = () => {
                   name: "issuedAt",
                   label: " Issued at:",
                 }}
+                disabled={true}
               />
               <FormInput
                 formProps={{
                   control,
                   name: "issuedCountry",
                 }}
+                disabled={true}
               />
             </div>
             <div>
@@ -14047,19 +14823,50 @@ const Hbl = () => {
                   name: "issuedBy",
                   label: " By :",
                 }}
+                disabled={true}
                 divClassName="row-div"
               />
             </div>
             <div>
-              <FormInput
+              <Form.Group className="pt-2">
+                <Form.Label htmlFor="date">
+                  Date
+                </Form.Label>
+                <Controller
+                  name="blDate"
+                  control={control}
+                  render={({ field }) => (
+                    <DatePicker views={["year", "month", "day"]} field={...field} onChange={field.onChange} format="DD-MM-YYYY"   value={field.value} />
+                    // <DatePicker
+                    // 	{...field}
+                    // 	className="form-control"
+                    // 	value={field.value}
+                    // 	// slotProps={{
+                    // 	// 	textField: {
+                    // 	// 		readOnly: true,
+                    // 	// 	},
+                    // 	// }}
+                    // 	// disablePast
+                    // 	// id="etd"
+                    // 	views={["year", "month", "day"]}
+                    // 	format="DD-MM-YYYY"
+                    // />
+                  )}
+                />
+                {errors.date && (
+                  <span className="error">{errors.blDate.message}</span>
+                )}
+              </Form.Group>
+              {/* <FormInput
                 formProps={{
                   control,
                   name: "blDate",
-                  label: " Date :",
+                  label: "Date :",
                 }}
                 className="bldate"
                 type="date"
-              />
+                placeholder="DD-MM-YYYY"
+              /> */}
             </div>
           </div>
         </div>
@@ -14067,10 +14874,7 @@ const Hbl = () => {
           <button type="button" onClick={() => previewHbl()}>
             Preview
           </button>
-          <button
-            type="button"
-            onClick={() => resetHandler()}
-          >
+          <button type="button" onClick={() => resetHandler()}>
             Reset
           </button>
           <button type="submit">Save</button>

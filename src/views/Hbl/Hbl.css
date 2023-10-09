@@ -114,7 +114,7 @@ textarea {
 
 .second-container-first-item {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 100px 200px;
+  grid-template-columns: 1fr 1fr 1fr 160px 200px;
   column-gap: 10px;
 }
 

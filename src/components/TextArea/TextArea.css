@@ -1,0 +1,20 @@
+.error{
+    color: red !important;
+}
+
+.maindiv{
+    height: 100%;
+}
+
+.shipper {
+    height: 82%;
+}
+
+.ctext{
+    font-size: 12px !important;
+    margin: -20px auto 0;
+}
+.ctextdiv{
+    width: 90% !important;
+}
+

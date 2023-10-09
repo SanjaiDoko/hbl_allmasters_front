@@ -1,0 +1,33 @@
+.error{
+    color: red !important;
+}
+
+.declaredinput{
+    height: 15px;
+    width: 90% !important;
+    padding: 10px 0 !important;
+    font-size: 12px !important;
+}
+
+.bldate{
+    width: 200px !important;
+}
+
+.tableInput{
+    height: 22px;
+    font-size: 12px !important;
+    padding: 5px !important;
+}
+
+.row-div{
+    display: grid !important;
+    grid-template-columns: 45px 1fr;
+    grid-template-columns: 45px 1fr;
+    align-items: center;
+    justify-content: center;
+    margin: 10px 0;
+}
+
+.cinput{
+    width: 90% !important;
+}    

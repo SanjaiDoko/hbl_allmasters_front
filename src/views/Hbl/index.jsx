@@ -191,24 +191,14 @@ const Hbl = () => {
     mode: "onSubmit",
   });
 
-  console.log(watch("blDate"),"blDate")
-
   useEffect(() => {
-
     if (data.documentNo) {
-      console.log(data,"dat5a")
       let formData = { ...data };
       formData.correction = defaultCorrection;
-      console.log(moment(formData.blDate),"useef") //2023-10-05 useef
-      // formData.blDate = moment(formData.blDate)
-      formData.blDate = moment(formData.blDate,"YYYY-MM-DD")
-      console.log(formData,"foem data")
-      console.log(moment(formData.date),"form bl data")
+      formData.blDate = moment(formData.blDate,"YYYY-MM-DD").format("YYYY-MM-DD")
       reset(formData);
     }
   }, [data]);
-
-  console.log(watch('blDate'),"blDate")
 
   const { fields, append, remove } = useFieldArray({
     control,
@@ -262,7 +252,6 @@ const Hbl = () => {
     reset();
   };
 
-  console.log(errors,"errors")
 
   const formSubmitHandler = async (data) => {
     data.date = moment(data.blDate, "YYYY-DD-MM");
@@ -14828,7 +14817,7 @@ const Hbl = () => {
               />
             </div>
             <div>
-              <Form.Group className="pt-2">
+              {/* <Form.Group className="pt-2">
                 <Form.Label htmlFor="date">
                   Date
                 </Form.Label>
@@ -14836,7 +14825,7 @@ const Hbl = () => {
                   name="blDate"
                   control={control}
                   render={({ field }) => (
-                    <DatePicker views={["year", "month", "day"]} field={...field} onChange={field.onChange} format="DD-MM-YYYY"   value={field.value} />
+                    <DatePicker field={...field} onChange={field.onChange} format="DD-MM-YYYY"  value={field.value} />
                     // <DatePicker
                     // 	{...field}
                     // 	className="form-control"
@@ -14856,8 +14845,8 @@ const Hbl = () => {
                 {errors.date && (
                   <span className="error">{errors.blDate.message}</span>
                 )}
-              </Form.Group>
-              {/* <FormInput
+              </Form.Group> */}
+              <FormInput
                 formProps={{
                   control,
                   name: "blDate",
@@ -14866,7 +14855,7 @@ const Hbl = () => {
                 className="bldate"
                 type="date"
                 placeholder="DD-MM-YYYY"
-              /> */}
+              />
             </div>
           </div>
         </div>

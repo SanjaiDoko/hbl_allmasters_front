@@ -10,7 +10,7 @@ const validationSchema = yup.object({
     source: yup.string().required("Please select a valid Source."),
     portOfLoading: yup.string().required("Please select Port of Loading."),
     portOfDischarge: yup.string().required("Please select Port of Discharge."),
-    blDate: yup.string().required("Please slect the bl Date."),
+    blDate: yup.string().required("Please slect the bl Date.").transform,
     declaredValue: yup
       .string()
       .typeError("Please input the valid declared value")

@@ -1,0 +1,386 @@
+.hbl-section {
+  /* max-width: 1440px; */
+  padding: 10px 50px;
+  background-color: #dfeaeb;
+}
+
+.hbl-heading {
+  text-align: center;
+  margin: 15px;
+}
+
+.first-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.fourthdiv,
+.fifthdiv {
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+}
+
+.first-container-item:not(:last-child) {
+  border-bottom: 1px solid #fff;
+}
+
+.first-container-item {
+  display: flex;
+  column-gap: 20px;
+  border: 1px solid #fff;
+  padding: 10px;
+}
+
+.left-item {
+  width: 50%;
+}
+
+.left-item label {
+  display: block;
+}
+
+.first-right-item {
+  width: 50%;
+}
+
+.first-right-item label {
+  display: block;
+}
+
+textarea {
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+  font-size: 12px;
+  background-color: #fcfcfc;
+  border: solid 1px #79fcf7;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 8px;
+  -moz-box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 8px;
+  -webkit-box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 8px;
+}
+
+.documentnumberdiv {
+  display: flex;
+  column-gap: 50px;
+}
+
+.red {
+  color: red;
+}
+
+.light {
+  font-size: 11px;
+  color: #000066;
+}
+
+.second-container {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  border: 1px solid #fff;
+  border-top: none;
+}
+
+.field_r {
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+  font-size: 8pt;
+  background-color: #fcfcfc;
+  border: solid 1px #fcbaba;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 8px;
+  -moz-box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 8px;
+  -webkit-box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 8px;
+}
+
+.field_b {
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+  font-size: 8pt;
+  background-color: #fcfcfc;
+  border: solid 1px #79fcf7;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 8px;
+  -moz-box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 8px;
+  -webkit-box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 8px;
+}
+
+.pointState {
+  width: 70%;
+}
+
+.oceanselect {
+  width: 150px;
+}
+
+.sourceselect {
+  width: 100px;
+}
+
+.second-container-first-item {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 100px 200px;
+  column-gap: 10px;
+}
+
+.second-container-second-item,
+.second-container-third-item {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+}
+
+.second-container-second-item {
+  padding: 10px 0;
+}
+
+.portOfLoadingselect,
+.portOfDischargeselect {
+  width: 180px;
+}
+
+.second-container-first-item .thirddiv {
+  display: flex;
+  column-gap: 10px;
+}
+
+.third-container {
+  border: 1px solid #fff;
+  border-top: none;
+}
+
+.third-container .firstdiv {
+  padding: 10px;
+  background-color: #bafcce;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.third-container p {
+  font-weight: bold;
+  font-size: 12px;
+  color: #000066;
+  margin-bottom: 0 !important;
+}
+
+.third-container .firstdiv {
+  border-bottom: 1px solid #fff;
+}
+
+.third-container .seconddiv {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  border-bottom: 1px solid #fff;
+  padding: 10px;
+}
+
+.thirddiv {
+  background-color: #dfeaeb;
+}
+
+.cargocontainer {
+  display: grid;
+  grid-template-columns: 100px 1fr 2fr 1fr 1fr 20px;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 10px;
+  border-bottom: 1px solid #fff;
+}
+
+.seconddivselect {
+  width: 160px;
+}
+
+.cargoItemContainer {
+  border-bottom: 1px solid #fff;
+  display: grid;
+  grid-template-columns: 100px 1fr 2fr 1fr 1fr 20px;
+  justify-content: center;
+  padding: 5px;
+}
+
+.cargoItemContainer .packagesdiv {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  row-gap: 10px;
+}
+
+.marksdiv {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.marksdiv label,
+i {
+  font-weight: bold;
+  font-size: 12px;
+  color: #000066;
+}
+
+.hidden textarea {
+  display: none;
+}
+
+.packagesdiv .col-flex {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.col-flex input {
+  width: 160px;
+}
+
+.form-text {
+  margin-top: 0 !important;
+}
+
+.cargoItemContainer .descriptiondiv {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.btnContainer {
+  display: flex;
+  justify-content: center;
+  margin: 10px;
+}
+
+.btnContainer button {
+  padding: 10px 15px;
+  font-weight: 400;
+  border: 1px solid #000;
+}
+
+.seconddiv {
+  background-color: #dfeaeb;
+}
+
+.fourth-container {
+  border: 1px solid #fff;
+  border-top: none;
+  padding: 5px;
+}
+
+.bold {
+  font-weight: 600;
+}
+
+.declareddiv {
+  display: flex;
+}
+
+.declaredinput {
+  margin: 0 5px;
+}
+
+.bottomContainer {
+  font-weight: bold;
+  font-size: 10px;
+  color: rgb(0, 0, 0);
+  font-family: Verdana, tahoma, Arial;
+  background-color: rgb(179, 195, 198);
+  border-top: 1px solid #fff;
+  height: 35px;
+  display: flex;
+  justify-content: center;
+  column-gap: 10px;
+  align-items: center;
+}
+
+.bottomContainer button {
+  font-weight: bold;
+  font-size: 11px;
+  color: rgb(17, 0, 0);
+  font-family: Verdana, tahoma, Arial;
+  background-color: rgb(238, 238, 238);
+  border-right: 1px solid;
+  border-top: 1px solid;
+  border-left: 1px solid;
+  border-bottom: 1px solid;
+  padding: 2px 15px;
+  height: fit-content;
+}
+
+input:disabled {
+  background-color: rgb(220, 220, 220);
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 8px;
+}
+
+.frieghtratescontainer {
+  display: grid;
+  grid-template-columns: 1fr 500px;
+  border: 1px solid #fff;
+  border-bottom: none;
+  border-top: none;
+}
+
+.issuedcontainer {
+  width: 500px;
+  padding: 3px 10px;
+}
+
+.rateTxt {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 5px;
+  background-color: #bafcce;
+}
+
+.rateTxt p {
+  margin-bottom: 0 !important;
+  font-size: 14px;
+}
+
+select:disabled {
+  background-color: rgb(220, 220, 220);
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 8px;
+}
+
+.table {
+  display: flex;
+  justify-content: center;
+  background-color: #dfeaeb;
+  padding: 15px;
+}
+
+.table table{
+    width: 80% !important;
+} 
+
+.rselect {
+  border: solid 1px #fcbaba;
+}
+
+.bselect {
+  border: solid 1px #79fcf7;
+}
+
+.red {
+  color: red;
+}
+
+.dateflex {
+  display: flex;
+  flex-direction: column;
+}
+
+.cell {
+  margin-right: 5px;
+  padding: 10px;
+}
+
+
+.tableheader td {
+  font-size: 14px;
+}
+
+.issuedAtdiv{
+    display: flex;
+    /* justify-content: flex-end; */
+    align-items: flex-end;
+    column-gap: 5px;
+}

@@ -14,8 +14,10 @@ const PreviewHbl = () => {
   const dispatch = useDispatch()
   const data = useSelector(state => state.hbl.hblData)
 
+  console.log(data,"data")
+
   useEffect(() => {
-  
+    console.log(data,"data")
     let payload = {}
    
     const {

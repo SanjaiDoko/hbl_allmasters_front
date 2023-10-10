@@ -380,7 +380,14 @@ select:disabled {
 
 .issuedAtdiv{
     display: flex;
-    /* justify-content: flex-end; */
     align-items: flex-end;
     column-gap: 5px;
+}
+
+.css-nxo287-MuiInputBase-input-MuiOutlinedInput-input{
+  height: 0px !important;
+}
+
+.bldatelabel{
+  margin-right: 12px;
 }

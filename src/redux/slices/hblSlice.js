@@ -39,7 +39,6 @@ const  hblData  = {
     issuedCountry: "UNITED ARAB EMIRATES",
     issuedBy: "Al Barrak Shipping Agencies Co. LLC.",
     blDate: null,
-    date: {},
     correction: [
     //   {
     //     subjectionCorrection: "",

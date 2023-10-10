@@ -321,23 +321,38 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     marginBottom: 6
   },
-  oneDate: {
+  voneDate: {
     flexBasis: "33%",
     fontSize: 8,
     textAlign: "center",
     color: "blue"
+  },
+  vtwoDate: {
+    flexBasis: "33%",
+    fontSize: 8,
+    textAlign: "center",
+    color: "blue"
+  },
+  vthreeDate: {
+    flexBasis: "33%",
+    fontSize: 8,
+    textAlign: "center",
+    color: "blue"
+  },
+  oneDate: {
+    flexBasis: "33%",
+    fontSize: 8,
+    textAlign: "center",
   },
   twoDate: {
     flexBasis: "33%",
     fontSize: 8,
     textAlign: "center",
-    color: "blue"
   },
   threeDate: {
     flexBasis: "33%",
     fontSize: 8,
     textAlign: "center",
-    color: "blue"
   },
   totaldiv: {
     display: "flex",
@@ -525,13 +540,6 @@ const styles = StyleSheet.create({
 export const HblPdf = (props) => {
 
   let data = {...props}
-
-  console.log(data.date,"blData")
-
-  console.log(props,"sdfsdf")
-
-  console.log(moment(data.date,"DD-MM-YYYY").format("MMM"),"sdfa")
-
   let fieldArr = [...props.cargoItems]
 
   let correction = [...props.correction]
@@ -555,7 +563,6 @@ export const HblPdf = (props) => {
   }
 
   insertEmptyCargoData(fieldArr)
-
   insertEmptyCargoData(correction)
  
   return (
@@ -871,14 +878,14 @@ export const HblPdf = (props) => {
                 <Text style={styles.threeDate}>YEAR</Text>
               </View>
               <View style={styles.dateDiv}>
-                <Text style={styles.oneDate}>
-                  {moment(data.date, "YYYY-MM-DD").format("MMM") ?? ""}
+                <Text style={styles.voneDate}>
+                  {moment(data.blDate, "YYYY-DD-MM").format("MMM") ?? ""}
                 </Text>
-                <Text style={styles.twoDate}>
-                  {moment(data.date, "YYYY-MM-DD").format("DD") ?? ""}
+                <Text style={styles.vtwoDate}>
+                  {moment(data.blDate, "YYYY-DD-MM").format("DD") ?? ""}
                 </Text>
-                <Text style={styles.threeDate}>
-                  {moment(data.date, "YYYY-MM-DD").format("YYYY") ?? ""}
+                <Text style={styles.vthreeDate}>
+                  {moment(data.blDate, "YYYY-DD-MM").format("YYYY") ?? ""}
                 </Text>
               </View>
             </View>

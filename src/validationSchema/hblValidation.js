@@ -44,7 +44,6 @@ const validationSchema = yup.object({
           .string()
           .test("marksAndNumbers", "Enter Marks & No", function (value) {
             const index = this.path.split(".")[0].charAt(11);
-            console.log(index, "index");
             if (this.options.context.marksType === "multi") {
               if (!value) {
                 return false;

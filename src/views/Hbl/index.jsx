@@ -16,6 +16,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { resetHblData, setHblData } from "../../redux/slices/hblSlice";
 import { useNavigate } from "react-router";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import dayjs from 'dayjs';
 
 const openFileNewWindow = async (data) => {
   let blob = await pdf(HblPdf(data)).toBlob();
@@ -87,7 +88,8 @@ const Hbl = () => {
   const navigate = useNavigate();
   const data = useSelector((state) => state.hbl.hblData);
   const [shipmentType, setShipmentType] = useState("fcl");
-  const [marksType, setMarksType] = useState("multi");
+  // const [reset,setReset] = useState(false)
+  const [marksType, setMarksType] = useState(data.marksType ? data.marksType : "multi");
   let initialCargoItems = {
     containerText: "",
     containerType: "",
@@ -191,19 +193,21 @@ const Hbl = () => {
     mode: "onSubmit",
   });
 
-  useEffect(() => {
-    if (data.documentNo) {
-      let formData = { ...data };
-      formData.correction = defaultCorrection;
-      formData.blDate = moment(formData.blDate,"YYYY-MM-DD").format("YYYY-MM-DD")
-      reset(formData);
-    }
-  }, [data]);
-
   const { fields, append, remove } = useFieldArray({
     control,
     name: "cargoItems",
   });
+
+  useEffect(() => {
+    console.log("ren der")
+    if (data.documentNo) {
+      console.log(data,"data")
+      let formData = { ...data };
+      formData.correction = defaultCorrection;
+      formData.blDate = dayjs(formData.blDate,"YYYY-DD-MM")
+      reset(formData);
+    }
+  }, []);
 
   const { fields: cargoFields } = useFieldArray({
     control,
@@ -232,10 +236,12 @@ const Hbl = () => {
   const MarksChangeHandler = (value) => {
     setMarksType(value);
     if (value === "single") {
+      console.log(getValues(),"values")
       setValue(
         "cargoItems",
         getValues("cargoItems").map((objec, i) => {
           if (i === 0) {
+            return { ...objec};
           } else {
             clearErrors(`cargoItems[${i}].marksAndNumbers`);
             return { ...objec, marksAndNumbers: "" };
@@ -247,17 +253,14 @@ const Hbl = () => {
   };
 
   const resetHandler = () => {
+    reset(defaultValues);
     alert("Are you sure you want to reset the values");
     dispatch(resetHblData());
-    reset();
+    window.location.reload()
+
   };
 
-
   const formSubmitHandler = async (data) => {
-    data.date = moment(data.blDate, "YYYY-DD-MM");
-    console.log(data.blDate,"bldate")
-    data.blDate = moment(data.blDate, "YYYY-DD-MM");
-    console.log(data.date,"date")
     dispatch(setHblData(data));
     navigate("/preview");
   };
@@ -14817,36 +14820,30 @@ const Hbl = () => {
               />
             </div>
             <div>
-              {/* <Form.Group className="pt-2">
-                <Form.Label htmlFor="date">
-                  Date
+    
+              <Form.Group className="pt-2">
+                <Form.Label htmlFor="blDate" className="bldatelabel">
+                  Date :
                 </Form.Label>
                 <Controller
                   name="blDate"
                   control={control}
+                  defaultValue={null}
                   render={({ field }) => (
-                    <DatePicker field={...field} onChange={field.onChange} format="DD-MM-YYYY"  value={field.value} />
-                    // <DatePicker
-                    // 	{...field}
-                    // 	className="form-control"
-                    // 	value={field.value}
-                    // 	// slotProps={{
-                    // 	// 	textField: {
-                    // 	// 		readOnly: true,
-                    // 	// 	},
-                    // 	// }}
-                    // 	// disablePast
-                    // 	// id="etd"
-                    // 	views={["year", "month", "day"]}
-                    // 	format="DD-MM-YYYY"
-                    // />
+                    <DatePicker  
+                    {...field} 
+                    defaultValue={null}
+                    format="DD-MM-YYYY"  
+                    className="muidatepicker"
+                    value={field.value}
+                    />
                   )}
                 />
                 {errors.date && (
                   <span className="error">{errors.blDate.message}</span>
                 )}
-              </Form.Group> */}
-              <FormInput
+              </Form.Group> 
+              {/* <FormInput
                 formProps={{
                   control,
                   name: "blDate",
@@ -14855,7 +14852,7 @@ const Hbl = () => {
                 className="bldate"
                 type="date"
                 placeholder="DD-MM-YYYY"
-              />
+              /> */}
             </div>
           </div>
         </div>
@@ -14863,7 +14860,7 @@ const Hbl = () => {
           <button type="button" onClick={() => previewHbl()}>
             Preview
           </button>
-          <button type="button" onClick={() => resetHandler()}>
+          <button type="button" onClick={() => {resetHandler()}}>
             Reset
           </button>
           <button type="submit">Save</button>

@@ -114,7 +114,7 @@ textarea {
 
 .second-container-first-item {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 100px 200px;
+  grid-template-columns: 1fr 1fr 1fr 160px 200px;
   column-gap: 10px;
 }
 
@@ -380,7 +380,14 @@ select:disabled {
 
 .issuedAtdiv{
     display: flex;
-    /* justify-content: flex-end; */
     align-items: flex-end;
     column-gap: 5px;
+}
+
+.css-nxo287-MuiInputBase-input-MuiOutlinedInput-input{
+  height: 0px !important;
+}
+
+.bldatelabel{
+  margin-right: 12px;
 }

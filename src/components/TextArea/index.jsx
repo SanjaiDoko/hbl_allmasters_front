@@ -2,12 +2,12 @@ import { Form } from "react-bootstrap";
 import { Controller } from "react-hook-form";
 import './TextArea.css'
 
-export function TextArea({ formProps, fieldProps, row, cols , maxlength, className, parentClassName }) {
+export function TextArea({ formProps, fieldProps, row, cols , maxlength, className, parentClassName, mandatory }) {
   const { control, name, label } = formProps;
 
   return (
     <Form.Group className={`maindiv ${parentClassName ?? ""}`}>
-      <Form.Label>{label}</Form.Label>
+      <Form.Label>{label} {mandatory && <span className="red">*</span>}</Form.Label>
       <Controller
         control={control}
         name={name}

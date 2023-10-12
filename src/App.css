@@ -11,8 +11,11 @@
   color: #fff;
   font-weight: bold;
   font-size: 18px;
+  background-color: #007c6e;
+  height: 50px
 }
 
 .form-label{
   font-size: 12px !important;
+  font-weight: 500;
 }

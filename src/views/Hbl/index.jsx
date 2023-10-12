@@ -2,11 +2,9 @@ import React, { useEffect, useState } from "react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import "./Hbl.css";
-import * as yup from "yup";
-import { BlobProvider, PDFViewer, pdf } from "@react-pdf/renderer";
+import { pdf } from "@react-pdf/renderer";
 import { HblPdf } from "../../components/HblPdf";
 import { createObjectURL } from "blob-util";
-import moment from "moment";
 import { FormInput } from "../../components/Input/input";
 import { TextArea } from "../../components/TextArea";
 import Form from "react-bootstrap/Form";
@@ -21,15 +19,6 @@ import dayjs from 'dayjs';
 const openFileNewWindow = async (data) => {
   let blob = await pdf(HblPdf(data)).toBlob();
   let blobUrl;
-  // if (typeof fileData !== "string") {
-  // 	throw new Error("Uploaded File is Not a String");
-  // }
-  /* convert base64 string to blob object */
-  // blob = base64StringToBlob(
-  // 	fileData.substring(fileData.indexOf(",") + 1),
-  // 	"application/pdf"
-  // );
-  /* convert blob to blobUrl */
   blobUrl = createObjectURL(blob);
   const userAgent = window.navigator.userAgent;
 
@@ -87,8 +76,7 @@ const Hbl = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const data = useSelector((state) => state.hbl.hblData);
-  const [shipmentType, setShipmentType] = useState("fcl");
-  // const [reset,setReset] = useState(false)
+  const [shipmentType, setShipmentType] = useState(data?.shipmentType ? data.shipmentType : "fcl");
   const [marksType, setMarksType] = useState(data.marksType ? data.marksType : "multi");
   let initialCargoItems = {
     containerText: "",
@@ -133,7 +121,7 @@ const Hbl = () => {
       portOfDischarge: "",
       placeOfDelivery: "",
       typeOfMove: "PortToPort",
-      shipmentType: "fcl",
+      shipmentType: data?.shipmentType ? data.shipmentType : "fcl",
       cargoItems: [
         {
           containerText: "",
@@ -199,9 +187,7 @@ const Hbl = () => {
   });
 
   useEffect(() => {
-    console.log("ren der")
     if (data.documentNo) {
-      console.log(data,"data")
       let formData = { ...data };
       formData.correction = defaultCorrection;
       formData.blDate = dayjs(formData.blDate,"YYYY-DD-MM")
@@ -236,10 +222,9 @@ const Hbl = () => {
   const MarksChangeHandler = (value) => {
     setMarksType(value);
     if (value === "single") {
-      console.log(getValues(),"values")
       setValue(
         "cargoItems",
-        getValues("cargoItems").map((objec, i) => {
+        getValues("cargoItems").map((objec, i) => { 
           if (i === 0) {
             return { ...objec};
           } else {
@@ -292,6 +277,13 @@ const Hbl = () => {
         }
         <div className="packagesdiv">
           <div className="col-flex">
+          {/* <FormInput
+            formProps={{
+              control,
+              name: `cargoItems${index}.containerText`,
+            }}
+            // className="declaredinput"
+          /> */}
             <input
               {...register(`cargoItems.${index}.containerText`)}
               disabled={watch("shipmentType") === "lcl"}
@@ -308,11 +300,11 @@ const Hbl = () => {
             <Controller
               name={`cargoItems.${index}.containerType`}
               control={control}
-              defaultValue=""
               render={({ field }) => (
                 <>
                   <select
                     {...field}
+                    value={watch(`cargoItems.${index}.containerType`)}
                     disabled={watch("shipmentType") === "lcl"}
                     name="containerType"
                     id="containerType"
@@ -892,17 +884,6 @@ const Hbl = () => {
             className="ctext"
             parentClassName="ctextdiv"
           />
-          {/* <textarea
-            {...register(`cargoItems.${index}.description`)}
-            rows={7}
-            cols="59"
-            className="field_b"
-          />
-          <Form.Text className="error">
-            {errors?.cargoItems
-              ? errors.cargoItems[index]?.description?.message
-              : ""}
-          </Form.Text> */}
         </div>
         <div className="fourthdiv">
           <FormInput
@@ -912,17 +893,6 @@ const Hbl = () => {
             }}
             className="cinput"
           />
-          {/* <input
-            {...register(`cargoItems.${index}.grossWeight`)}
-            type="text"
-            className="field_r"
-           
-          /> */}
-          {/* <Form.Text className="error">
-            {errors?.cargoItems
-              ? errors.cargoItems[index]?.grossWeight?.message
-              : ""}
-          </Form.Text> */}
         </div>
         <div className="fifthdiv">
           <FormInput
@@ -932,18 +902,6 @@ const Hbl = () => {
             }}
             // className="declaredinput"
           />
-          {/* <input
-            {...register(`cargoItems.${index}.measurement`)}
-            type="text"
-            className="field_b"
-            onWheel={() => document.activeElement.blur()}
-            // name="measurement"
-          />
-          <Form.Text className="error">
-            {errors?.cargoItems
-              ? errors.cargoItems[index]?.measurement?.message
-              : ""}
-          </Form.Text> */}
         </div>
         <div>
           {index != 0 && (
@@ -1000,7 +958,6 @@ const Hbl = () => {
 
   return (
     <section className="hbl-section">
-      <h1 className="hbl-heading">HBL Document</h1>
       <form onSubmit={handleSubmit(formSubmitHandler)}>
         <div className="first-container">
           <div className="first-container-item">
@@ -1055,7 +1012,7 @@ const Hbl = () => {
                 formProps={{
                   control,
                   name: "consignee",
-                  label: "CONSIGNEE :",
+                  label: "CONSIGNEE",
                 }}
                 maxLength="472"
                 rows="7"
@@ -1065,7 +1022,7 @@ const Hbl = () => {
             </div>
             <div className="first-right-item">
               <div className="row-flex documentnumberdiv">
-                <div>
+                <div className="destinationdivcontainer">
                   <TextArea
                     formProps={{
                       control,
@@ -1097,7 +1054,7 @@ const Hbl = () => {
                 formProps={{
                   control,
                   name: "notifyParty",
-                  label: " NOTIFY PARTY (Name and address) :",
+                  label: " NOTIFY PARTY (Name and address)",
                 }}
                 maxLength="472"
                 rows="7"
@@ -13880,7 +13837,7 @@ const Hbl = () => {
             <div>
               {fields.map((item, index) => {
                 return (
-                  <div className="cargoItemContainer">
+                  <div key={item.id} className="cargoItemContainer">
                     {
                       <div
                         className={`marksdiv ${
@@ -14821,7 +14778,7 @@ const Hbl = () => {
             </div>
             <div>
     
-              <Form.Group className="pt-2">
+              <Form.Group className="pt-2 bldatelabel">
                 <Form.Label htmlFor="blDate" className="bldatelabel">
                   Date :
                 </Form.Label>
@@ -14839,7 +14796,7 @@ const Hbl = () => {
                     />
                   )}
                 />
-                {errors.date && (
+                {errors.blDate && (
                   <span className="error">{errors.blDate.message}</span>
                 )}
               </Form.Group> 
@@ -14857,13 +14814,13 @@ const Hbl = () => {
           </div>
         </div>
         <div className="bottomContainer">
-          <button type="button" onClick={() => previewHbl()}>
+          {/* <button type="button" onClick={() => previewHbl()}>
             Preview
-          </button>
+          </button> */}
           <button type="button" onClick={() => {resetHandler()}}>
             Reset
           </button>
-          <button type="submit">Save</button>
+          <button type="submit">Preview</button>
         </div>
       </form>
     </section>

@@ -2,11 +2,12 @@ import React, { useEffect } from "react";
 import { Page, Text, View, Document, StyleSheet } from "@react-pdf/renderer";
 import moment from "moment/moment";
 
+
 // Create styles
 const styles = StyleSheet.create({
   body: {
     padding: 10,
-    position: "relative"
+    position: "relative",
   },
   boldText: {
     fontSize: 9,
@@ -49,11 +50,11 @@ const styles = StyleSheet.create({
   },
   headerLeft: {
     flexBasis: "50%",
-    paddingVertical: 7
+    paddingVertical: 5
   },
   headerRight: {
     flexBasis: "40%",
-    paddingVertical: 7
+    paddingVertical: 5
   },
   textdiv: {
     marginTop: 5,
@@ -574,7 +575,7 @@ export const HblPdf = (props) => {
         <View style={styles.headerSection}>
           <View style={styles.headerLeft}>
             <Text style={styles.text}>Carrier :</Text>
-            <Text style={styles.title}>ALL WORLD SHIPPING CORP.</Text>
+            <Text style={styles.title}>AllMasters.AI .</Text>
           </View>
           <View style={styles.headerRight}>
             <View style={styles.bill}>

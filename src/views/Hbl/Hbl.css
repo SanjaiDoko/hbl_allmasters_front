@@ -2,6 +2,7 @@
   /* max-width: 1440px; */
   padding: 10px 50px;
   background-color: #dfeaeb;
+  padding-top: 40px;
 }
 
 .hbl-heading {
@@ -19,6 +20,10 @@
   display: flex;
   flex-direction: column;
   margin: 0 auto;
+}
+
+.destinationdivcontainer{
+  width: 100%;
 }
 
 .first-container-item:not(:last-child) {
@@ -390,4 +395,13 @@ select:disabled {
 
 .bldatelabel{
   margin-right: 12px;
+}
+
+.bldatelabel{
+  display: flex;
+  flex-direction: column;
+}
+
+.muidatepicker{
+  width: 200px !important;
 }

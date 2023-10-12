@@ -16,7 +16,7 @@ function App() {
     <Provider store={store}>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
       <PersistGate loading={null} persistor={persistor}>
-        <div className="header" style={{background: "blue", height: "50px"}}>HBL DOCUMENT</div>
+        <div className="header">HBL DOCUMENT</div>
         <Routes>
           <Route path="/" element={<Hbl />} />
           <Route path="/preview" element={<PreviewHbl />} />
